@@ -1,0 +1,19 @@
+{
+  "name": "buddy-cli",
+  "version": "1.0.0",
+  "description": "CLI tool for Buddy Cloud",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Buddy Authors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buddy-works/buddy-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/buddy-works/buddy-cli/issues"
+  },
+  "homepage": "https://buddy.works"
+}
