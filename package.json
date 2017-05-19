@@ -4,7 +4,8 @@
   "description": "CLI tool for Buddy Cloud",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "lint": "./node_modules/.bin/eslint ."
   },
   "author": "Buddy Authors",
   "license": "MIT",
@@ -15,5 +16,17 @@
   "bugs": {
     "url": "https://github.com/buddy-works/buddy-cli/issues"
   },
-  "homepage": "https://buddy.works"
+  "homepage": "https://buddy.works",
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "cliui": "^3.2.0",
+    "commander": "^2.9.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.2.0",
+    "mocha": "^3.3.0"
+  }
 }
