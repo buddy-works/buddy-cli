@@ -1,8 +1,11 @@
 {
   "name": "buddy-cli",
   "version": "1.0.0",
-  "description": "CLI tool for Buddy Cloud",
-  "main": "index.js",
+  "description": "CLI tool for Buddy Works",
+  "bin": {
+    "buddy-cli": "bin/buddy-cli.js"
+  },
+  "preferGlobal": true,
   "scripts": {
     "test": "mocha",
     "lint": "./node_modules/.bin/eslint ."
@@ -20,7 +23,8 @@
   "dependencies": {
     "chalk": "^1.1.3",
     "cliui": "^3.2.0",
-    "commander": "^2.9.0"
+    "commander": "git+https://github.com/tj/commander.js.git#3367806abf354cb420477ffe1a9dcaeb7388392f",
+    "request": "^2.81.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

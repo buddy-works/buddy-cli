@@ -1,6 +1,3 @@
-/**
- * Created by Michal on 12/05/2017.
- */
 const expect = require('chai').expect;
 
 describe('Array', () => {
