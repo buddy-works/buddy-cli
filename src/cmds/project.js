@@ -1,15 +1,26 @@
 const config = require('../config');
+const api = require('../api');
 
 module.exports = {
   ls: (opts) => {
     config.mergeOptions(opts);
-    console.log('ls');
-    console.log('status', opts.status);
-    console.log('mine', opts.mine);
+    const each = (obj) => {
+      // todo obsluzyc
+      console.log('obj', obj);
+    };
+    const done = (err) => {
+      // todo obsluzyc
+      console.log('err', err);
+    };
+    api.getProjects(opts, each, done);
   },
 
   inspect: (project, opts) => {
     config.mergeOptions(opts);
-    console.log('inspect', project);
+    api.getProject(project, (err, obj) => {
+      console.log('err', err);
+      console.log('obj', obj);
+      // todo obsluzyc
+    });
   },
 };

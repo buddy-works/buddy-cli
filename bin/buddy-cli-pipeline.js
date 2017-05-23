@@ -44,6 +44,12 @@ program
   .description('retry execution of a given pipeline')
   .action(cmd.retry);
 
+program
+  .command('executions <pipeline>')
+  .alias('ex')
+  .description('show pipeline execution history')
+  .action(cmd.executions);
+
 program.parse(process.argv);
 
 if (!process.argv.slice(2).length) {
