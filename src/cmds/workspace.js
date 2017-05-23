@@ -1,9 +1,13 @@
+const config = require('../config');
+
 module.exports = {
-  ls: () => {
+  ls: (opts) => {
+    config.mergeOptions(opts);
     console.log('ls');
   },
 
-  inspect: (workspace) => {
+  inspect: (workspace, opts) => {
+    config.mergeOptions(opts);
     console.log('inspect', workspace);
   },
 };
