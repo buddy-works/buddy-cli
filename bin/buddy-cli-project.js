@@ -5,6 +5,7 @@ const pJson = require('../package.json');
 const cmd = require('../src/cmds/project');
 
 program
+  .alias('buddy-cli project')
   .version(pJson.version)
   .option('-t, --token [token]', 'token to authenticate request')
   .option('-u, --url [url]', 'base url for app (default: api.buddy.works)')

@@ -5,6 +5,7 @@ const pJson = require('../package.json');
 const cmd = require('../src/cmds/config');
 
 program
+  .alias('buddy-cli config')
   .version(pJson.version);
 
 program
@@ -16,6 +17,11 @@ program
   .command('get [token|url|workspace|project]')
   .description('view current config')
   .action(cmd.get);
+
+program
+  .command('clear')
+  .description('reset config to default state')
+  .action(cmd.clear);
 
 program.parse(process.argv);
 
