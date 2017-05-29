@@ -1,26 +1,12 @@
-const config = require('../config');
-const api = require('../api');
+module.exports.command = 'project <cmd>';
 
-module.exports = {
-  ls: (opts) => {
-    config.mergeOptions(opts);
-    const each = (obj) => {
-      // todo obsluzyc
-      console.log('obj', obj);
-    };
-    const done = (err) => {
-      // todo obsluzyc
-      console.log('err', err);
-    };
-    api.getProjects(opts, each, done);
-  },
+module.exports.aliases = 'pj';
 
-  inspect: (project, opts) => {
-    config.mergeOptions(opts);
-    api.getProject(project, (err, obj) => {
-      console.log('err', err);
-      console.log('obj', obj);
-      // todo obsluzyc
-    });
-  },
+module.exports.describe = 'project list, inspect';
+
+module.exports.builder = (yargs) => {
+  this.yargs = yargs;
+  return yargs.commandDir('project');
 };
+
+module.exports.handler = () => this.yargs.showHelp();

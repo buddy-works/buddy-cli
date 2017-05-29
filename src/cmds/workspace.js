@@ -1,22 +1,13 @@
-const config = require('../config');
-const api = require('../api');
 
-module.exports = {
-  ls: (opts) => {
-    config.mergeOptions(opts);
-    api.getWorkspaces((err, obj) => {
-      console.log('err', err);
-      console.log('obj', obj);
-      // todo obsluzyc
-    });
-  },
+module.exports.command = 'workspace <cmd>';
 
-  inspect: (workspace, opts) => {
-    config.mergeOptions(opts);
-    api.getWorkspace(workspace, (err, obj) => {
-      console.log('err', err);
-      console.log('obj', obj);
-      // todo obsluzyc
-    });
-  },
+module.exports.aliases = 'ws';
+
+module.exports.describe = 'workspace list, inspect';
+
+module.exports.builder = (yargs) => {
+  this.yargs = yargs;
+  return yargs.commandDir('workspace');
 };
+
+module.exports.handler = () => this.yargs.showHelp();

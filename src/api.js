@@ -5,14 +5,18 @@ function Client() {
   /**
    * @param {string} method
    * @param {string} url
+   * @param {object} query
+   * @param {object} args
    * @param {object} params
    * @param {function} done
    */
-  const req = (method, url, params, done) => {
+  const req = (method, url, query, args, params, done) => {
+    config.mergeOptions(args);
     const token = config.get(config.KEY_TOKEN);
     const baseUrl = config.get(config.KEY_URL);
     const workspace = config.get(config.KEY_WORKSPACE);
     const project = config.get(config.KEY_PROJECT);
+    const pipeline = config.get(config.KEY_PIPELINE);
     let path = url;
     if (!token) {
       done(new Error('No valid token provided'));
@@ -32,6 +36,21 @@ function Client() {
       }
       path = path.replace(/:project/g, project);
     }
+    if (/:pipeline/.test(url)) {
+      if (!pipeline) {
+        done(new Error('No pipeline provided'));
+        return;
+      }
+      path = path.replace(/:pipeline/g, pipeline);
+    }
+    const queryKeys = Object.keys(query);
+    if (queryKeys.length > 0) {
+      path += '?';
+      queryKeys.forEach((name) => {
+        if (!/\?$/.test(path)) path += '&';
+        path += `${name}=${query[name]}`;
+      });
+    }
     request({
       url: `https://${baseUrl}${path}`,
       method,
@@ -41,115 +60,153 @@ function Client() {
       body: params,
       json: true,
     }, (err, resp, body) => {
-      console.log('err', err);
-      console.log('body', body);
-      done();
+      if (err) {
+        done(err);
+      } else if (body && body.errors && body.errors.length > 0) {
+        done(new Error(body.errors[0].message));
+      } else {
+        done(null, body);
+      }
     });
   };
   /**
    * @param {string} url
+   * @param {object} query
+   * @param {object} args
    * @param {function} done
    */
-  this.get = (url, done) => {
-    req('GET', url, null, done);
+  this.get = (url, query, args, done) => {
+    req('GET', url, query, args, null, done);
   };
   /**
    * @param {string} url
+   * @param {object} query
+   * @param {object} args
    * @param {object} params
    * @param {function} done
    */
-  this.patch = (url, params, done) => {
-    req('PATCH', url, params, done);
+  this.patch = (url, query, args, params, done) => {
+    req('PATCH', url, query, args, params, done);
   };
   /**
    * @param {string} url
+   * @param {object} query
+   * @param {object} args
    * @param {object} params
    * @param {function} done
    */
-  this.post = (url, params, done) => {
-    req('POST', url, params, done);
+  this.post = (url, query, args, params, done) => {
+    req('POST', url, query, args, params, done);
   };
 }
 
 function Api() {
   const client = new Client();
   /**
+   * @type {number}
+   */
+  this.perPage = 30;
+  /**
+   * @param {Object} args
    * @param {Function} done
    */
-  this.getWorkspaces = done => client.get('/workspaces', done);
+  this.getWorkspaces = (args, done) => client.get('/workspaces', {}, args, done);
   /**
-   * @param {string} workspace
    * @param {function} done
    */
-  this.getWorkspace = (workspace, done) => client.get(`/workspaces/${workspace}`, done);
+  this.getWorkspace = (args, done) => client.get('/workspaces/:workspace', {}, args, done);
   /**
-   * @param {object} opts
-   * @param {function} each
+   * @param {object} args
    * @param {function} done
    */
-  this.getProjects = (opts, each, done) => {
-    // todo obsluz paramsy status, mine
-    // todo w petli pobierac dopoki sa
-    client.get('/workspaces/:workspace/projects', done);
-  };
-  /**
-   * @param {string} project
-   * @param {function} done
-   */
-  this.getProject = (project, done) => client.get(`/workspaces/:workspace/projects/${project}`, done);
-  /**
-   * @param {object} opts
-   * @param {function} each
-   * @param {function} done
-   */
-  this.getPipelines = (opts, each, done) => {
-    // todo obsluz parametry branch, status, mode
-    // todo w petli trzeba pobierac dopoki nie pobiore wszystkich
-    client.get('/workspaces/:workspace/projects/:project/pipelines', done);
-  };
-  /**
-   * @param {string} pipeline
-   * @param {function} done
-   */
-  this.getPipeline = (pipeline, done) => client.get(`/workspaces/:workspace/projects/:project/pipelines/${pipeline}`, done);
-  /**
-   * @param {string} pipeline
-   * @param {object} opts
-   * @param {function} done
-   */
-  this.runPipeline = (pipeline, opts, done) => {
-    const params = {
-      to_revision: 'HEAD',
+  this.getProjects = (args, done) => {
+    const query = {
+      per_page: this.perPage,
+      sort_by: 'name',
+      sort_direction: 'ASC',
     };
-    if (opts.revision) params.to_revision = opts.revision;
-    if (opts.comment) params.comment = opts.comment;
-    if (opts.refresh) params.refresh = true;
-    client.post(`/workspaces/:workspace/projects/:project/pipelines/${pipeline}/executions`, params, done);
+    if (!args.page) query.page = 1;
+    else query.page = args.page;
+    if (args.mine) query.membership = 'true';
+    if (args.status !== 'ANY') query.status = args.status;
+    client.get('/workspaces/:workspace/projects', query, args, done);
   };
   /**
-   * @param {string} pipeline
+   * @param {object} args
    * @param {function} done
    */
-  this.cancelPipeline = (pipeline, done) => {
-    // todo wpierw pobiez ost execution potem zrob na nim cancel
-    done();
+  this.getProject = (args, done) => client.get('/workspaces/:workspace/projects/:project', {}, args, done);
+  /**
+   * @param {object} args
+   * @param {function} done
+   */
+  this.getPipelines = (args, done) => {
+    const query = {
+      per_page: this.perPage,
+      sort_by: 'name',
+      sort_direction: 'ASC',
+    };
+    if (!args.page) query.page = 1;
+    else query.page = args.page;
+    client.get('/workspaces/:workspace/projects/:project/pipelines', query, args, done);
   };
   /**
-   * @param {string} pipeline
+   * @param {object} args
    * @param {function} done
    */
-  this.retryPipeline = (pipeline, done) => {
-    // todo wpierw pobiez ost execution potem zrob na nim retry
-    done();
+  this.getPipeline = (args, done) => client.get('/workspaces/:workspace/projects/:project/pipelines/:pipeline', {}, args, done);
+  /**
+   * @param {object} args
+   * @param {function} done
+   */
+  this.runPipeline = (args, done) => {
+    const params = {
+      to_revision: {
+        revision: 'HEAD',
+      },
+    };
+    if (args.revision) params.to_revision.revision = args.revision;
+    if (args.comment) params.comment = args.comment;
+    if (args.refresh) params.refresh = true;
+    client.post('/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions', {}, args, params, done);
   };
   /**
-   * @param {string} pipeline
-   * @param {function} each
+   * @param {object} args
    * @param {function} done
    */
-  this.getExecutions = (pipeline, each, done) => {
-    // todo w petli trzeba pobierac dopoki nie pobiore wszystkich
-    client.get(`/workspaces/:workspace/projects/:project/pipelines/${pipeline}/executions`, done);
+  this.getLastExecution = (args, done) => client.get('/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions', { page: 1, per_page: 1 }, args, (err, obj) => {
+    if (err) done(err);
+    else if (!obj.executions.length) done();
+    else done(null, obj.executions[0]);
+  });
+  /**
+   * @param {object} args
+   * @param {function} done
+   */
+  this.getExecution = (args, done) => client.get(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${args.execution}`, {}, args, done);
+  /**
+   * @param {string} executionId
+   * @param {object} args
+   * @param {function} done
+   */
+  this.cancelPipeline = (executionId, args, done) => client.patch(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${executionId}`, {}, args, { operation: 'CANCEL' }, done);
+  /**
+   * @param {string} executionId
+   * @param {object} args
+   * @param {function} done
+   */
+  this.retryPipeline = (executionId, args, done) => client.patch(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${executionId}`, {}, args, { operation: 'RETRY' }, done);
+  /**
+   * @param {object} args
+   * @param {function} done
+   */
+  this.getExecutions = (args, done) => {
+    const query = {
+      per_page: this.perPage,
+    };
+    if (!args.page) query.page = 1;
+    else query.page = args.page;
+    client.get('/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions', {}, args, done);
   };
 }
 

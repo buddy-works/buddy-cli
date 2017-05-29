@@ -1,27 +1,13 @@
 #!/usr/bin/env node
 
-const program = require('commander');
+const yargs = require('yargs');
 const pJson = require('../package.json');
 
-program.version(pJson.version);
-program
-  .command('config <cmd>', 'get, set config')
-  .alias('cf');
-
-program
-  .command('workspace <cmd>', 'workspace list, details')
-  .alias('ws');
-
-program
-  .command('project <cmd>', 'list workspace projects')
-  .alias('pj');
-
-program
-  .command('pipeline <cmd>', 'pipeline list, inspect, operations')
-  .alias('pl');
-
-program.parse(process.argv);
-
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
-}
+yargs
+  .commandDir('../src/cmds')
+  .demandCommand(1, 'Provide at least one command')
+  .version('v', 'Show version', pJson.version)
+  .alias('v', 'version')
+  .help('h')
+  .alias('h', 'help')
+  .parse(process.argv.slice(2));
