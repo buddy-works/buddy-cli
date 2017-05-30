@@ -105,7 +105,7 @@ function Api() {
   /**
    * @type {number}
    */
-  this.perPage = 30;
+  this.perPage = 20;
   /**
    * @param {Object} args
    * @param {Function} done

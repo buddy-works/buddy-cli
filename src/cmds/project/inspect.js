@@ -31,17 +31,21 @@ module.exports.builder = {
   },
 };
 
+module.exports.request = (args, done) => api.getProject(args, done);
+
+module.exports.render = (args, obj) => output.props(args.json, obj);
+
+module.exports.transform = (args, obj) => ({
+  name: obj.name,
+  display_name: obj.display_name,
+  url: obj.html_url,
+  status: obj.status,
+  created: obj.create_date,
+});
+
 module.exports.handler = (args) => {
-  api.getProject(args, (err, obj) => {
-    if (err) output.error(args.json, err.message);
-    else {
-      output.props(args.json, {
-        name: obj.name,
-        display_name: obj.display_name,
-        url: obj.html_url,
-        status: obj.status,
-        created: obj.create_date,
-      });
-    }
+  exports.request(args, (err, obj) => {
+    if (err) output.error(args.json, obj.message);
+    else exports.render(args, exports.transform(args, obj));
   });
 };

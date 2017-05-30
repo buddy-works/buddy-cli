@@ -24,21 +24,30 @@ module.exports.builder = {
   },
 };
 
-module.exports.handler = (args) => {
-  api.getWorkspaces(args, (err, obj) => {
-    if (err) output.error(args.json, err.message);
-    else {
-      const table = args.json ? [] : [['NAME']];
-      if (obj && obj.workspaces && obj.workspaces.length > 0) {
-        for (let i = 0; i < obj.workspaces.length; i += 1) {
-          if (args.json) {
-            table.push(obj.workspaces[i].domain);
-          } else {
-            table.push([obj.workspaces[i].domain]);
-          }
-        }
-      }
-      output.table(args.json, table);
+module.exports.transform = (args, obj) => {
+  const table = args.json ? [] : [['NAME']];
+  for (let i = 0; i < obj.length; i += 1) {
+    if (args.json) {
+      table.push(obj[i].domain);
+    } else {
+      table.push([obj[i].domain]);
     }
+  }
+  return table;
+};
+
+module.exports.request = (args, done) => {
+  api.getWorkspaces(args, (err, obj) => {
+    if (err) done(err);
+    else done(null, obj.workspaces);
+  });
+};
+
+module.exports.render = (args, obj) => output.table(args.json, obj);
+
+module.exports.handler = (args) => {
+  exports.request(args, (err, obj) => {
+    if (err) output.error(args.json, obj.message);
+    else exports.render(args, exports.transform(args, obj));
   });
 };

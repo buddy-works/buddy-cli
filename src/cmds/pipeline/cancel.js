@@ -37,21 +37,25 @@ module.exports.builder = {
   },
 };
 
-module.exports.handler = (args) => {
+module.exports.request = (args, done) => {
   api.getLastExecution(args, (err, obj) => {
+    if (err) done(err);
+    else if (!obj) done(new Error('Pipeline has no executions yet'));
+    else if (obj.status !== 'INPROGRESS' && obj.status !== 'ENQUEUED') done(new Error('Pipeline is not running right now'));
+    else api.cancelPipeline(obj.id, args, done);
+  });
+};
+
+module.exports.render = (args) => {
+  let msg = 'Stopping pipeline\n';
+  msg += 'Check its status by running:\n\n';
+  msg += `buddy-cli pl i ${config.get(config.KEY_PIPELINE)}`;
+  output.ok(args.json, msg);
+};
+
+module.exports.handler = (args) => {
+  exports.request(args, (err) => {
     if (err) output.error(args.json, err.message);
-    else if (!obj) output.error(args.json, 'Pipeline has no executions yet');
-    else if (obj.status !== 'INPROGRESS' && obj.status !== 'ENQUEUED') output.error(args.json, 'Pipeline is not running right now');
-    else {
-      api.cancelPipeline(obj.id, args, (err2) => {
-        if (err2) output.error(args.json, err2.message);
-        else {
-          let msg = 'Stopping pipeline\n';
-          msg += 'Check its status by running:\n\n';
-          msg += `buddy-cli pl i ${config.get(config.KEY_PIPELINE)}`;
-          output.ok(args.json, msg);
-        }
-      });
-    }
+    else exports.render(args);
   });
 };

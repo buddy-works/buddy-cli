@@ -20,48 +20,23 @@ function Output() {
   /**
    * @param {string} txt
    */
-  this.green = txt => chalk.green(txt);
+  const errorText = txt => outputText(chalk.red(txt));
   /**
    * @param {string} txt
    */
-  this.red = txt => chalk.red(txt);
+  const errorJson = txt => outputJson({ success: false, message: txt });
   /**
    * @param {string} txt
    */
-  this.errorText = txt => outputText(this.red(txt));
+  const okText = txt => outputText(chalk.green(txt));
   /**
    * @param {string} txt
    */
-  this.errorJson = txt => outputJson({ error: txt });
-  /**
-   * @param {boolean} json
-   * @param {string} txt
-   */
-  this.error = (json, txt) => {
-    if (json) this.errorJson(txt);
-    else this.errorText(txt);
-    process.exit(1);
-  };
-  /**
-   * @param {string} txt
-   */
-  this.okText = txt => outputText(this.green(txt));
-  /**
-   * @param {string} txt
-   */
-  this.okJson = txt => outputJson({ success: true, message: txt });
-  /**
-   * @param {boolean} json
-   * @param {string} txt
-   */
-  this.ok = (json, txt) => {
-    if (json) this.okJson(txt);
-    else this.okText(txt);
-  };
+  const okJson = txt => outputJson({ success: true, message: txt });
   /**
    * @param {Array} arr
    */
-  this.tableText = (arr) => {
+  const tableText = (arr) => {
     let txt = '';
     for (let row = 0; row < arr.length; row += 1) {
       if (row > 0) txt += '\n';
@@ -76,23 +51,15 @@ function Output() {
   /**
    * @param {Array} arr
    */
-  this.tableJson = arr => outputJson(arr);
-  /**
-   * @param {boolean} json
-   * @param {Array} arr
-   */
-  this.table = (json, arr) => {
-    if (json) this.tableJson(arr);
-    else this.tableText(arr);
-  };
+  const tableJson = arr => outputJson(arr);
   /**
    * @param {Object} obj
    */
-  this.propsJson = obj => outputJson(obj);
+  const propsJson = obj => outputJson(obj);
   /**
    * @param {Object} obj
    */
-  this.propsText = (obj) => {
+  const propsText = (obj) => {
     let txt = 'KEY\tVALUE\n';
     let was = false;
     Object.keys(obj).forEach((key) => {
@@ -108,11 +75,36 @@ function Output() {
   };
   /**
    * @param {boolean} json
+   * @param {string} txt
+   */
+  this.error = (json, txt) => {
+    if (json) errorJson(txt);
+    else errorText(txt);
+    process.exit(1);
+  };
+  /**
+   * @param {boolean} json
+   * @param {string} txt
+   */
+  this.ok = (json, txt) => {
+    if (json) okJson(txt);
+    else okText(txt);
+  };
+  /**
+   * @param {boolean} json
+   * @param {Array} arr
+   */
+  this.table = (json, arr) => {
+    if (json) tableJson(arr);
+    else tableText(arr);
+  };
+  /**
+   * @param {boolean} json
    * @param {object} obj
    */
   this.props = (json, obj) => {
-    if (json) this.propsJson(obj);
-    else this.propsText(obj);
+    if (json) propsJson(obj);
+    else propsText(obj);
   };
   /**
    * @param {function} done

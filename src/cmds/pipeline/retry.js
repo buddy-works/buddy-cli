@@ -37,21 +37,25 @@ module.exports.builder = {
   },
 };
 
-module.exports.handler = (args) => {
+module.exports.request = (args, done) => {
   api.getLastExecution(args, (err, obj) => {
+    if (err) done(err);
+    else if (!obj) done(new Error('Pipeline has no executions yet'));
+    else if (obj.status !== 'FAILED' && obj.status !== 'TERMINATED') done(new Error('Pipeline last execution is not failed or terminated'));
+    else api.retryPipeline(obj.id, args, done);
+  });
+};
+
+module.exports.render = (args) => {
+  let msg = 'Retrying pipeline\n';
+  msg += 'Check its status by running:\n\n';
+  msg += `buddy-cli pl i ${config.get(config.KEY_PIPELINE)}`;
+  output.ok(args.json, msg);
+};
+
+module.exports.handler = (args) => {
+  exports.request(args, (err) => {
     if (err) output.error(args.json, err.message);
-    else if (!obj) output.error(args.json, 'Pipeline has no executions yet');
-    else if (obj.status !== 'FAILED' && obj.status !== 'TERMINATED') output.error(args.json, 'Pipeline last execution is not failed or terminated');
-    else {
-      api.retryPipeline(obj.id, args, (err2) => {
-        if (err2) output.error(args.json, err2.message);
-        else {
-          let msg = 'Retrying pipeline\n';
-          msg += 'Check its status by running:\n\n';
-          msg += `buddy-cli pl i ${config.get(config.KEY_PIPELINE)}`;
-          output.ok(args.json, msg);
-        }
-      });
-    }
+    else exports.render(args);
   });
 };

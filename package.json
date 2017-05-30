@@ -15,7 +15,9 @@
   },
   "preferGlobal": true,
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --recursive --grep unit",
+    "test:all": "mocha --recursive",
+    "test:int": "mocha --recursive --grep integrated",
     "lint": "./node_modules/.bin/eslint ."
   },
   "author": "Buddy Authors",
@@ -38,6 +40,7 @@
     "yargs": "8.0.1"
   },
   "devDependencies": {
+    "sinon": "^2.3.2",
     "chai": "^3.5.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.2.0",

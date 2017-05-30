@@ -36,20 +36,24 @@ module.exports.builder = {
   },
 };
 
+module.exports.request = (args, done) => api.getPipeline(args, done);
+
+module.exports.transform = (args, obj) => ({
+  id: obj.id,
+  display_name: obj.name,
+  url: obj.html_url,
+  mode: obj.trigger_mode,
+  status: obj.last_execution_status,
+  created: obj.create_date,
+  branch: obj.ref_name,
+  active: obj.active,
+});
+
+module.exports.render = (args, obj) => output.props(args.json, obj);
+
 module.exports.handler = (args) => {
-  api.getPipeline(args, (err, obj) => {
+  exports.request(args, (err, obj) => {
     if (err) output.error(args.json, err.message);
-    else {
-      output.props(args.json, {
-        id: obj.id,
-        display_name: obj.name,
-        url: obj.html_url,
-        mode: obj.trigger_mode,
-        status: obj.last_execution_status,
-        created: obj.create_date,
-        branch: obj.ref_name,
-        active: obj.active,
-      });
-    }
+    else exports.render(args, exports.transform(args, obj));
   });
 };

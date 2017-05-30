@@ -52,14 +52,18 @@ module.exports.builder = {
   },
 };
 
+module.exports.request = (args, done) => api.runPipeline(args, done);
+
+module.exports.render = (args) => {
+  let msg = 'Running pipeline\n';
+  msg += 'Check its status by running:\n\n';
+  msg += `buddy-cli pl i ${config.get(config.KEY_PIPELINE)}`;
+  output.ok(args.json, msg);
+};
+
 module.exports.handler = (args) => {
-  api.runPipeline(args, (err) => {
+  exports.request(args, (err) => {
     if (err) output.error(args.json, err.message);
-    else {
-      let msg = 'Running pipeline\n';
-      msg += 'Check its status by running:\n\n';
-      msg += `buddy-cli pl i ${config.get(config.KEY_PIPELINE)}`;
-      output.ok(args.json, msg);
-    }
+    else exports.render(args);
   });
 };

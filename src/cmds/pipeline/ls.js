@@ -39,50 +39,44 @@ module.exports.builder = {
     type: 'number',
   },
 };
-let renderText;
-/**
- * @param {Array} obj
- */
-const renderJson = (obj) => {
-  const table = [];
-  for (let i = 0; i < obj.length; i += 1) {
-    table.push({
-      id: obj[i].id,
-      display_name: obj[i].name,
-      status: obj[i].last_execution_status,
-    });
-  }
-  output.table(true, table);
-};
-/**
- * @param {object} args
- */
-const fetchAndRender = (args) => {
+
+module.exports.request = (args, done) => {
   api.getPipelines(args, (err, obj) => {
-    if (err) output.error(args.json, err.message);
-    else if (args.json) renderJson(obj.pipelines);
-    else renderText(args, obj.pipelines);
+    if (err) done(err);
+    else done(null, obj.pipelines);
   });
 };
-/**
- * @param {object} args
- * @param {Array} obj
- */
-renderText = (args, obj) => {
-  const table = [['ID', 'DISPLAY NAME', 'STATUS']];
+
+module.exports.render = (args, obj) => output.table(args.json, obj);
+
+module.exports.transform = (args, obj) => {
+  const table = args.json ? [] : [['ID', 'DISPLAY NAME', 'STATUS']];
   for (let i = 0; i < obj.length; i += 1) {
-    table.push([obj[i].id, obj[i].name, obj[i].last_execution_status]);
+    if (args.json) {
+      table.push({
+        id: obj[i].id,
+        display_name: obj[i].name,
+        status: obj[i].last_execution_status,
+      });
+    } else {
+      table.push([obj[i].id, obj[i].name, obj[i].last_execution_status]);
+    }
   }
-  output.table(false, table);
-  if (obj.length === api.perPage) {
-    output.askForMore(() => {
-      const a = args;
-      a.page += 1;
-      fetchAndRender(a);
-    });
-  }
+  return table;
 };
 
 module.exports.handler = (args) => {
-  fetchAndRender(args);
+  exports.request(args, (err, obj) => {
+    if (err) output.error(args.json, obj.message);
+    else {
+      exports.render(args, exports.transform(args, obj));
+      if (!args.json && (obj.length === api.perPage)) {
+        output.askForMore(() => {
+          const a = args;
+          a.page += 1;
+          exports.handler(a);
+        });
+      }
+    }
+  });
 };

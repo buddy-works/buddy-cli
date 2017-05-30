@@ -40,11 +40,19 @@ module.exports.builder = {
     type: 'string',
   },
 };
-/**
- * @param {object} args
- * @param {object} obj
- */
-const renderProps = (args, obj) => {
+
+module.exports.request = (args, done) => {
+  if (args.execution) api.getExecution(args, done);
+  else {
+    api.getLastExecution(args, (err, obj) => {
+      if (err) done(err);
+      else if (!obj) done(new Error('Pipeline has no executions yet'));
+      else done(null, obj);
+    });
+  }
+};
+
+module.exports.transform = (args, obj) => {
   let branch = null;
   if (obj.branch) {
     branch = obj.branch.name;
@@ -61,7 +69,7 @@ const renderProps = (args, obj) => {
   if (obj.creator) {
     creator = obj.creator.name;
   }
-  const props = {
+  return {
     id: obj.id,
     url: obj.html_url,
     start_date: obj.start_date,
@@ -75,20 +83,13 @@ const renderProps = (args, obj) => {
     from_revision: fromRevision,
     creator,
   };
-  output.props(args.json, props);
 };
 
+module.exports.render = (args, obj) => output.props(args.json, obj);
+
 module.exports.handler = (args) => {
-  if (!args.execution) {
-    api.getLastExecution(args, (err, obj) => {
-      if (err) output.error(args.json, err.message);
-      else if (!obj) output.error(args.json, 'Pipeline has no executions yet');
-      else renderProps(args, obj);
-    });
-  } else {
-    api.getExecution(args, (err, obj) => {
-      if (err) output.error(args.json, err.message);
-      else renderProps(args, obj);
-    });
-  }
+  exports.request(args, (err, obj) => {
+    if (err) output.error(args.json, err.message);
+    else exports.render(args, exports.transform(args, obj));
+  });
 };

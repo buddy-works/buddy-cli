@@ -26,17 +26,21 @@ module.exports.builder = {
   },
 };
 
+module.exports.request = (args, done) => api.getWorkspace(args, done);
+
+module.exports.transform = (args, obj) => ({
+  name: obj.domain,
+  display_name: obj.name,
+  url: obj.html_url,
+  frozen: obj.frozen,
+  created: obj.create_date,
+});
+
+module.exports.render = (args, obj) => output.props(args.json, obj);
+
 module.exports.handler = (args) => {
-  api.getWorkspace(args, (err, obj) => {
-    if (err) output.error(args.json, err.message);
-    else {
-      output.props(args.json, {
-        name: obj.domain,
-        display_name: obj.name,
-        url: obj.html_url,
-        frozen: obj.frozen,
-        created: obj.create_date,
-      });
-    }
+  exports.request(args, (err, obj) => {
+    if (err) output.error(args.json, obj.message);
+    else exports.render(args, exports.transform(args, obj));
   });
 };

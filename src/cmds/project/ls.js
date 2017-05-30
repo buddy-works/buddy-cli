@@ -46,51 +46,47 @@ module.exports.builder = {
     type: 'number',
   },
 };
-let renderText;
-/**
- * @param {Array} obj
- */
-const renderJson = (obj) => {
-  const table = [];
-  for (let i = 0; i < obj.length; i += 1) {
-    table.push({
-      name: obj[i].name,
-      status: obj[i].status,
-    });
-  }
-  output.table(true, table);
-};
-/**
- * @param {object} args
- */
-const fetchAndRender = (args) => {
+
+module.exports.request = (args, done) => {
   api.getProjects(args, (err, obj) => {
-    if (err) output.error(args.json, err.message);
-    else if (args.json) renderJson(obj.projects);
-    else renderText(args, obj.projects);
+    if (err) done(err);
+    else done(null, obj.projects);
   });
 };
-/**
- * @param {object} args
- * @param {Array} obj
- */
-renderText = (args, obj) => {
-  const table = [['NAME', 'STATUS']];
+
+module.exports.transform = (args, obj) => {
+  const table = args.json ? [] : [['NAME', 'STATUS']];
   for (let i = 0; i < obj.length; i += 1) {
-    table.push([obj[i].name, obj[i].status]);
+    const o = obj[i];
+    if (args.json) {
+      table.push({
+        name: o.name,
+        status: o.status,
+      });
+    } else {
+      table.push([o.name, o.status]);
+    }
   }
-  output.table(false, table);
-  if (obj.length === api.perPage) {
-    output.askForMore(() => {
-      const a = args;
-      a.page += 1;
-      fetchAndRender(a);
-    });
-  }
+  return table;
 };
+
+module.exports.render = (args, obj) => output.table(args.json, obj);
+
 /**
  * @param {object} args
  */
 module.exports.handler = (args) => {
-  fetchAndRender(args);
+  exports.request(args, (err, obj) => {
+    if (err) output.error(args.json, obj.message);
+    else {
+      exports.render(args, exports.transform(args, obj));
+      if (!args.json && (obj.length === api.perPage)) {
+        output.askForMore(() => {
+          const a = args;
+          a.page += 1;
+          exports.handler(a);
+        });
+      }
+    }
+  });
 };

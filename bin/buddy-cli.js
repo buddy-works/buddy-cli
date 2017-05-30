@@ -4,6 +4,7 @@ const yargs = require('yargs');
 const pJson = require('../package.json');
 
 yargs
+  .recommendCommands()
   .commandDir('../src/cmds')
   .demandCommand(1, 'Provide at least one command')
   .version('v', 'Show version', pJson.version)

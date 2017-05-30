@@ -41,84 +41,77 @@ module.exports.builder = {
     type: 'number',
   },
 };
-let renderText;
-/**
- * @param {Array} obj
- */
-const renderJson = (obj) => {
-  const table = [];
-  for (let i = 0; i < obj.length; i += 1) {
-    const e = obj[i];
-    let branch = null;
-    if (e.branch) {
-      branch = e.branch.name;
-    }
-    let toRevision = null;
-    if (e.to_revision) {
-      toRevision = e.to_revision.revision;
-    }
-    let fromRevision = null;
-    if (e.from_revision) {
-      fromRevision = e.from_revision.revision;
-    }
-    let creator = null;
-    if (e.creator) {
-      creator = e.creator.name;
-    }
-    table.push({
-      id: e.id,
-      url: e.html_url,
-      start_date: e.start_date,
-      finish_date: e.finish_date,
-      mode: e.mode,
-      refresh: e.refresh,
-      status: e.status,
-      comment: e.comment,
-      branch,
-      to_revision: toRevision,
-      from_revision: fromRevision,
-      creator,
-    });
-  }
-  output.table(true, table);
-};
-/**
- * @param {object} args
- */
-const fetchAndRender = (args) => {
+
+module.exports.request = (args, done) => {
   api.getExecutions(args, (err, obj) => {
-    if (err) output.error(args.json, err.message);
-    else if (args.json) renderJson(obj.executions);
-    else renderText(args, obj.executions);
+    if (err) done(err);
+    else done(null, obj.executions);
   });
 };
-/**
- * @param {object} args
- * @param {Array} obj
- */
-renderText = (args, obj) => {
-  const table = [['ID', 'TO REVISION', 'STATUS', 'FINISHED']];
+
+module.exports.transform = (args, obj) => {
+  const table = args.json ? [] : [['ID', 'TO REVISION', 'STATUS', 'FINISHED']];
   for (let i = 0; i < obj.length; i += 1) {
     const e = obj[i];
-    let rev = null;
-    if (e.to_revision) {
-      rev = e.to_revision.revision;
-      if (rev.length > 7) {
-        rev = rev.substr(0, 7);
+    if (args.json) {
+      let branch = null;
+      if (e.branch) {
+        branch = e.branch.name;
       }
+      let toRevision = null;
+      if (e.to_revision) {
+        toRevision = e.to_revision.revision;
+      }
+      let fromRevision = null;
+      if (e.from_revision) {
+        fromRevision = e.from_revision.revision;
+      }
+      let creator = null;
+      if (e.creator) {
+        creator = e.creator.name;
+      }
+      table.push({
+        id: e.id,
+        url: e.html_url,
+        start_date: e.start_date,
+        finish_date: e.finish_date,
+        mode: e.mode,
+        refresh: e.refresh,
+        status: e.status,
+        comment: e.comment,
+        branch,
+        to_revision: toRevision,
+        from_revision: fromRevision,
+        creator,
+      });
+    } else {
+      let rev = null;
+      if (e.to_revision) {
+        rev = e.to_revision.revision;
+        if (rev.length > 7) {
+          rev = rev.substr(0, 7);
+        }
+      }
+      table.push([e.id, rev, e.status, e.finish_date]);
     }
-    table.push([e.id, rev, e.status, e.finish_date]);
   }
-  output.table(false, table);
-  if (obj.length === api.perPage) {
-    output.askForMore(() => {
-      const a = args;
-      a.page += 1;
-      fetchAndRender(a);
-    });
-  }
+  return table;
 };
 
+module.exports.render = (args, obj) => output.table(args.json, obj);
+
 module.exports.handler = (args) => {
-  fetchAndRender(args);
+  exports.request(args, (err, obj) => {
+    if (err) output.error(args.json, err.message);
+    else {
+      exports.render(args, exports.transform(args, obj));
+      if (!args.json && (obj.length === api.perPage)) {
+        output.askForMore(() => {
+          const a = args;
+          a.page += 1;
+          exports.handler(a);
+        });
+      }
+    }
+  });
 };
