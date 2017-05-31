@@ -15,9 +15,7 @@
   },
   "preferGlobal": true,
   "scripts": {
-    "test": "mocha --recursive --grep unit",
-    "test:all": "mocha --recursive",
-    "test:int": "mocha --recursive --grep integrated",
+    "test": "mocha",
     "lint": "./node_modules/.bin/eslint ."
   },
   "author": "Buddy Authors",
