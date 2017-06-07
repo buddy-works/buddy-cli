@@ -14,35 +14,35 @@ module.exports.builder = {
   },
   t: {
     alias: 'token',
-    describe: 'token to authenticate request',
+    describe: 'Token to authenticate request',
     type: 'string',
   },
   u: {
     alias: 'url',
-    describe: 'base url for app (default: api.buddy.works)',
+    describe: 'Base url for app (default: api.buddy.works)',
     type: 'string',
   },
   w: {
     alias: 'workspace',
-    describe: 'name of a workspace in which run this command',
+    describe: 'Name of a workspace in which run this command',
     type: 'string',
   },
   s: {
     default: 'ANY',
     alias: 'status',
-    describe: 'filter by project status',
+    describe: 'Filter by project status',
     choices: ['ACTIVE', 'CLOSED', 'ANY'],
     type: 'string',
   },
   m: {
     alias: 'mine',
-    describe: 'show only projects in which user is a member',
+    describe: 'Show only projects in which user is a member',
     type: 'boolean',
   },
   e: {
     default: 1,
     alias: 'page',
-    describe: `which page to show (by default first ${api.perPage} projects are shown)`,
+    describe: `Which page to show (by default first ${api.perPage} projects are shown)`,
     type: 'number',
   },
 };

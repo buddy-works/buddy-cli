@@ -1,5 +1,5 @@
 {
-  "name": "buddy-cli",
+  "name": "buddyworks-cli",
   "version": "1.0.0",
   "description": "Command line tool for managing pipelines in Buddy Works",
   "keywords": [

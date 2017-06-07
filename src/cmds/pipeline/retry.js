@@ -17,22 +17,22 @@ module.exports.builder = {
   },
   t: {
     alias: 'token',
-    describe: 'token to authenticate request',
+    describe: 'Token to authenticate request',
     type: 'string',
   },
   u: {
     alias: 'url',
-    describe: 'base url for app (default: api.buddy.works)',
+    describe: 'Base url for app (default: api.buddy.works)',
     type: 'string',
   },
   w: {
     alias: 'workspace',
-    describe: 'name of a workspace in which run this command',
+    describe: 'Name of a workspace in which run this command',
     type: 'string',
   },
   p: {
     alias: 'project',
-    describe: 'name of a project in which run this command',
+    describe: 'Name of a project in which run this command',
     type: 'string',
   },
 };

@@ -17,37 +17,37 @@ module.exports.builder = {
   },
   t: {
     alias: 'token',
-    describe: 'token to authenticate request',
+    describe: 'Token to authenticate request',
     type: 'string',
   },
   u: {
     alias: 'url',
-    describe: 'base url for app (default: api.buddy.works)',
+    describe: 'Base url for app (default: api.buddy.works)',
     type: 'string',
   },
   w: {
     alias: 'workspace',
-    describe: 'name of a workspace in which run this command',
+    describe: 'Name of a workspace in which run this command',
     type: 'string',
   },
   p: {
     alias: 'project',
-    describe: 'name of a project in which run this command',
+    describe: 'Name of a project in which run this command',
     type: 'string',
   },
   r: {
     alias: 'revision',
-    describe: 'revision from the repository that will be executed in the pipeline',
+    describe: 'Revision from the repository that will be executed in the pipeline',
     type: 'string',
   },
   c: {
     alias: 'comment',
-    describe: 'execution comment',
+    describe: 'Execution comment',
     type: 'string',
   },
   f: {
     alias: 'refresh',
-    describe: 'execute from scratch',
+    describe: 'Execute from scratch',
     type: 'boolean',
   },
 };
