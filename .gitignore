@@ -44,5 +44,3 @@ jspm_packages
 .idea/
 jsconfig.json
 .vscode/
-
-config.json

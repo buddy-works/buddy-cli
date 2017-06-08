@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 function Config() {
   this.KEY_TOKEN = 'token';
@@ -21,8 +22,16 @@ function Config() {
     this.KEY_URL,
   ];
   let props = {};
-  const configPath = path.normalize(path.join(__dirname, '..', 'config.json'));
-  const me2disc = () => fs.writeFileSync(configPath, JSON.stringify(props));
+  const configDir = path.join(os.homedir(), '.buddy-cli');
+  const configPath = path.join(configDir, 'config.json');
+  const me2disc = () => {
+    try {
+      fs.statSync(configDir);
+    } catch (e) {
+      fs.mkdirSync(configDir);
+    }
+    fs.writeFileSync(configPath, JSON.stringify(props));
+  };
   const disc2me = () => {
     try {
       const s = fs.statSync(configPath);
@@ -85,7 +94,7 @@ function Config() {
     const res = {};
     for (let i = 0; i < allowedKeys.length; i += 1) {
       const key = allowedKeys[i];
-      res[key] = !props[key] ? '' : props[key];
+      res[key] = this.get(key);
     }
     return res;
   };
