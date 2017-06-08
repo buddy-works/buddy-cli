@@ -40,7 +40,7 @@ module.exports.render = (args, obj) => output.props(args.json, obj);
 
 module.exports.handler = (args) => {
   exports.request(args, (err, obj) => {
-    if (err) output.error(args.json, obj.message);
+    if (err) output.error(args.json, err.message);
     else exports.render(args, exports.transform(args, obj));
   });
 };
