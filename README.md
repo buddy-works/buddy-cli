@@ -180,6 +180,8 @@ Options:
  -l, --pipeline   The ID of the pipeline in which the command is run
 ```
 
+---
+
 ### Project operations
 ```
 buddy-cli project <cmd>
@@ -225,6 +227,8 @@ Options:
  -w, --workspace  The name of the workspace in which the command is run
 ```
 
+---
+
 ### Workspace operations
 ```
 buddy-cli workspace <cmd>
@@ -264,6 +268,8 @@ Options:
  -t, --token    Token to authenticate request
  -u, --url      Base url for app (default: api.buddy.works)
 ```
+
+---
 
 ### Config operations
 ```
@@ -324,6 +330,8 @@ By default, all keys are returned.
 buddy-cli cf clear
 ```
 This command resets the config to default values (empties all keys and resets the URL to `api.buddy.works`)
+
+---
 
 ### Environment variables
 You can use environment variables to store your config values. This feature is very useful if you want to usie buddy-cli in a Continuous Integration (CI) and/or Continuous Deployment (CD) environment. 
