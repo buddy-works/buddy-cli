@@ -1,12 +1,12 @@
 
 buddy-cli
 ==============================================================================
-The buddy.works command line utility.
+The Buddy CLI is used to manage Buddy.Works pipelines from the terminal.
 
 Features
 ------------------------------------------------------------------------------
-- Running pipelines from command line
-- Checking status of pipeline
+- Run pipelines from the command line
+- Check pipeline status
 - List executions
 - List pipelines
 - List projects
@@ -21,15 +21,15 @@ npm install -g buddyworks-cli
 Usage
 ------------------------------------------------------------------------------
 
-After installation the `buddy-cli` CLI tool will be available to you.
+The tool will be immediately available after the installation.
+You can call `buddy-cli -h` to find out more about commands available.
 
-You can call `buddy-cli -h` to find out more about all of the following commands.
+In order to call any command, you must first generate an auth token in your Buddy.Works [my-id](https://app.buddy.works/api-tokens) settings.
+If you are using Buddy Enterprise (standalone) you need to do the same, but in your own instance. Your token must have these scopes in order to work properly:
 
-In order to call any command you must first generate auth token in your buddy-works [myid](https://app.buddy.works/api-tokens)
-If you are using standalone Buddy Enterprise you can do the same but in your own instance. Your token must have this scopes in order to work properly:
-* WORKSPACE (Manage workspace and it's objects)
-* EXECUTION_INFO (Get pipelines)
-* EXECUTION_RUN (Run pipelines)
+* WORKSPACE – Manage workspace and its objects
+* EXECUTION_INFO – Get pipelines
+* EXECUTION_RUN – Run pipelines
 
 ### Pipeline operations
 ```
@@ -39,9 +39,10 @@ Shortcut:
 ```
 buddy-cli pl <cmd>
 ```
-Pipeline parameter is id of pipeline. You can get it from pipeline list command described below.
-Apart from that you must also passed token, workspace and project. 
-They are mandatory arguments but you can also store them in environmental variables or through config command which enable you to shorten your commands (more below)
+The `pipeline` parameter is the ID of the pipeline. You can get it from the pipeline list command described below.
+Apart from that you also need the passed token, workspace and project. 
+
+The arguments are mandatory, but you can store them in Buddy.Works as environment variables or through a config command that will enable you to shorten your commands (more below).
 
 #### Run pipeline
 ```
@@ -56,14 +57,15 @@ Options:
  -v, --version    Show version
  -h, --help       Show help
  -j, --json       Output json
- -t, --token      Token to authenticate request
- -u, --url        Base url for app (default: api.buddy.works)
- -w, --workspace  Name of a workspace in which run this command
- -p, --project    Name of a project in which run this command
- -r, --revision   Revision from the repository that will be executed in the pipeline
- -c, --comment    Execution comment
+ -t, --token      The token used to authenticate the request
+ -u, --url        The base URL for the app (default: api.buddy.works)
+ -w, --workspace  The name of the workspace in which the command is run
+ -p, --project    The name of the project in which the command is run
+ -r, --revision   The revision from the repository that will be executed in the pipeline
+ -c, --comment    The execution comment
  -f, --refresh    Execute from scratch
 ```
+
 #### Retry pipeline
 ```
 buddy-cli pl retry [pipeline]
@@ -77,11 +79,12 @@ Options:
  -v, --version    Show version
  -h, --help       Show help
  -j, --json       Output json
- -t, --token      Token to authenticate request
- -u, --url        Base url for app (default: api.buddy.works)
- -w, --workspace  Name of a workspace in which run this command
- -p, --project    Name of a project in which run this command
+ -t, --token      The token used to authenticate the request
+ -u, --url        The base URL for the app (default: api.buddy.works)
+ -w, --workspace  The name of the workspace in which the command is run
+ -p, --project    The name of the project in which the command is run
 ```
+
 #### Cancel pipeline
 ```
 buddy-cli pl cancel [pipeline]
@@ -95,11 +98,12 @@ Options:
  -v, --version    Show version
  -h, --help       Show help
  -j, --json       Output json
- -t, --token      Token to authenticate request
- -u, --url        Base url for app (default: api.buddy.works)
- -w, --workspace  Name of a workspace in which run this command
- -p, --project    Name of a project in which run this command
+ -t, --token      The token used to authenticate the request
+ -u, --url        The base URL for the app (default: api.buddy.works)
+ -w, --workspace  The name of the workspace in which the command is run
+ -p, --project    The name of the project in which the command is run
 ```
+
 #### Inspect pipeline
 ```
 buddy-cli pl inspect [pipeline]
@@ -113,10 +117,10 @@ Options:
  -v, --version    Show version
  -h, --help       Show help
  -j, --json       Output json
- -t, --token      Token to authenticate request
- -u, --url        Base url for app (default: api.buddy.works)
- -w, --workspace  Name of a workspace in which run this command
- -p, --project    Name of a project in which run this command
+ -t, --token      The token used to authenticate the request
+ -u, --url        The base URL for the app (default: api.buddy.works)
+ -w, --workspace  The name of the workspace in which the command is run
+ -p, --project    The name of the project in which the command is run
 ```
 #### List pipelines
 ```
@@ -127,12 +131,13 @@ Options:
  -v, --version    Show version
  -h, --help       Show help
  -j, --json       Output json
- -t, --token      Token to authenticate request
- -u, --url        Base url for app (default: api.buddy.works)
- -w, --workspace  Name of a workspace in which run this command
- -p, --project    Name of a project in which run this command
- -e, --page       Which page to show (by default first 20 pipelines are shown)
+ -t, --token      The token used to authenticate the request
+ -u, --url        The base URL for the app (default: api.buddy.works)
+ -w, --workspace  The name of the workspace in which the command is run
+ -p, --project    The name of the project in which the command is run
+ -e, --page       Which page to show (by default, the first 20 pipelines are shown)
 ```
+
 #### List pipeline executions
 ```
 buddy-cli pl executions [pipeline]
@@ -146,12 +151,13 @@ Options:
  -v, --version    Show version
  -h, --help       Show help
  -j, --json       Output json
- -t, --token      Token to authenticate request
- -u, --url        Base url for app (default: api.buddy.works)
- -w, --workspace  Name of a workspace in which run this command
- -p, --project    Name of a project in which run this command
- -e, --page       Which page to show (by default last 20 executions are shown)
+ -t, --token      The token used to authenticate the request
+ -u, --url        The base URL for the app (default: api.buddy.works)
+ -w, --workspace  The name of the workspace in which the command is run
+ -p, --project    The name of the project in which the command is run
+ -e, --page       The number of the pages to display (by default, the first 20 pipelines are shown)
 ```
+
 #### Inspect pipeline execution
 ```
 buddy-cli pl execution [execution]
@@ -160,19 +166,20 @@ Shortcut:
 ```
 buddy-cli pl ex [execution]
 ```
-[execution] parameter is id of the execution. If none passed last execution of the pipeline will be shown
+The `[execution]` parameter is the ID of the execution. If none has passed, the last execution of the pipeline will be shown.
 
 Options:
 ```
  -v, --version    Show version
  -h, --help       Show help
  -j, --json       Output json
- -t, --token      Token to authenticate request
- -u, --url        Base url for app (default: api.buddy.works)
- -w, --workspace  Name of a workspace in which run this command
- -p, --project    Name of a project in which run this command
- -l, --pipeline   Id of a pipeline in which run this command
+ -t, --token      The token used to authenticate the request
+ -u, --url        The base URL for the app (default: api.buddy.works)
+ -w, --workspace  The name of the workspace in which the command is run
+ -p, --project    The name of the project in which the command is run
+ -l, --pipeline   The ID of the pipeline in which the command is run
 ```
+
 ### Project operations
 ```
 buddy-cli project <cmd>
@@ -181,7 +188,8 @@ Shortcut:
 ```
 buddy-cli pj <cmd>
 ```
-The same rules for arguments apply here. Some mandatory arguments (like project name) can be stored in config or in env variables.
+The same rules for arguments apply here: some mandatory arguments, like project name, can be stored in the config or env variables.
+
 #### List projects
 ```
 buddy-cli pj ls
@@ -191,13 +199,14 @@ Options:
  -v, --version    Show version
  -h, --help       Show help
  -j, --json       Output json
- -t, --token      Token to authenticate request
- -u, --url        Base url for app (default: api.buddy.works)
- -w, --workspace  Name of a workspace in which run this command
+ -t, --token      The token used to authenticate the request
+ -u, --url        The base URL for the app (default: api.buddy.works)
+ -w, --workspace  The name of the workspace in which the command is run
  -s, --status     Filter by project status [choices: "ACTIVE", "CLOSED", "ANY"] [default: "ANY"]
- -m, --mine       Show only projects in which user is a member
- -e, --page       Which page to show (by default first 20 projects are shown)
+ -m, --mine       Show only the projects to which the user belongs
+ -e, --page       Which page to show (by default, the first 20 pipelines are shown)
 ```
+
 #### Inspect project
 ```
 buddy-cli pj inspect [project]
@@ -211,10 +220,11 @@ Options:
  -v, --version    Show version
  -h, --help       Show help
  -j, --json       Output json
- -t, --token      Token to authenticate request
- -u, --url        Base url for app (default: api.buddy.works)
- -w, --workspace  Name of a workspace in which run this command
+ -t, --token      The token used to authenticate the request
+ -u, --url        The base URL for the app (default: api.buddy.works)
+ -w, --workspace  The name of the workspace in which the command is run
 ```
+
 ### Workspace operations
 ```
 buddy-cli workspace <cmd>
@@ -223,7 +233,8 @@ Shortcut:
 ```
 buddy-cli ws <cmd>
 ```
-The same rules for arguments apply here. Some mandatory arguments (like workspace name) can be stored in config or in env variables.
+The same rules for arguments apply here: some mandatory arguments, like workspace name, can be stored in the config or in env variables.
+
 #### List workspaces
 ```
 buddy-cli ws ls
@@ -236,7 +247,8 @@ Options:
  -t, --token    Token to authenticate request
  -u, --url      Base url for app (default: api.buddy.works)
 ```
-#### Inspect workspace
+
+### Inspect workspace
 ```
 buddy-cli ws inspect [workspace]
 ```
@@ -252,6 +264,7 @@ Options:
  -t, --token    Token to authenticate request
  -u, --url      Base url for app (default: api.buddy.works)
 ```
+
 ### Config operations
 ```
 buddy-cli config <cmd>
@@ -260,41 +273,43 @@ Shortcut:
 ```
 buddy-cli cf <cmd>
 ```
-Config command is used to store some arguments for future use. 
-For example if you often run the same pipeline again and again you can store command params in config:
+The `config` command is used to store some arguments for future use. 
+For example, if you often run the same pipeline, you can store the command params in config:
 ```
 buddy-cli cf set token my-token
 buddy-cli cf set workspace my-workspace
 buddy-cli cf set project my-project
 buddy-cli cf set pipeline my-pipeline
 ```
-Next time you want to run your pipeline you can just call
+The next time you'll want to run your pipeline you can, just call
 ```
 buddy-cli pl run
 ```
-That's it!
-You can always however override default config params with standard command --param
+Please mind you can override the default config params with a standard `command --param`
+
 #### Set config key
 ```
 buddy-cli cf set <key> [val]
 ```
-key name is mandatory and can be one of these values:
-* token - token to authorize the request
-* workspace - name of the workspace in which you want to operate
-* project - name of the project from the workspace
-* pipeline - id of the pipeline in the project
-* url - base url for the api endpoint. By default we point to our hosted version api (api.buddy.works). You can however point this url to your Buddy Enterprise standalone api endpoint (ip/api)
+The key name is mandatory and can be one of the following values:
+* token – The token used to authenticate the request
+* workspace – The name of the workspace in which the command is run
+* project – The name of the project in the workspace
+* pipeline – The ID of the pipeline in the project
+* url – The base URL for the API endpoint. By default, we point to our hosted version  of the API (api.buddy.works), but you can also point this URL to your Buddy Enterprise (standalone) API endpoint (ip/api).
+
 Options:
 ```
   -v, --version  Show version
   -h, --help     Show help
   -j, --json     Output json
 ```
-#### Get config key
+
+### Get config key
 ```
 buddy-cli cf get [key]
 ```
-key can be one of these values:
+The key can be one of the following values:
 * token
 * workspace
 * project
@@ -302,24 +317,33 @@ key can be one of these values:
 * url
 * all
 
-By default all keys are returned
+By default, all keys are returned.
+
 #### Clear config
 ```
 buddy-cli cf clear
 ```
-It resets config to default values (empty all keys and url pointed to api.buddy.works)
+This command resets the config to default values (empties all keys and resets the URL to `api.buddy.works`)
 
-### Environmental variables
-In order to store config values you can also use env variables - it is very useful if you are using buddy-cli in some continues integration (ci) or continues deployment (cd) environment. 
-Indeed you can use it even in our own system @ buddy.works
-These is the list of variables you can use:
+### Environment variables
+You can use environment variables to store your config values. This feature is very useful if you want to usie buddy-cli in a Continuous Integration (CI) and/or Continuous Deployment (CD) environment. 
+
+This is the list of variables you can use:
 * BUDDY_CLI_TOKEN
 * BUDDY_CLI_WORKSPACE
 * BUDDY_CLI_PROJECT
 * BUDDY_CLI_PIPELINE
 * BUDDY_CLI_URL
 
-buddy-cli will use these params in order: first command line arguments, if none passed it will use env variables, next it will try to use config variables. If none is found and argument is mandatory it will throw error.
+Buddy CLI uses parameters in the following order:
+
+1. Command line arguments
+2. Environment variables
+3. Config variables
+
+If none of the above is found and the argument is mandatory, it will throw an error.
+
+Environment variables are also [available directly](https://buddy.works/knowledge/deployments/how-use-environment-variables) in the Buddy.Works system.
 
 License
 ------------------------------------------------------------------------------
