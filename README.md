@@ -1,6 +1,11 @@
 
 buddy-cli
 ==============================================================================
+[![buddy pipeline](https://app.buddy.works/hi-there/buddy-cli/pipelines/pipeline/53698/badge.svg?token=04cdb54a84fa521b80a12a17978d9f482cb8b62484528a0c6dcae50ea1c5add2 "buddy pipeline")](https://app.buddy.works/hi-there/buddy-cli/pipelines/pipeline/53698)
+[![GitHub issues](https://img.shields.io/github/issues/buddy-works/buddy-cli.svg)](https://github.com/buddy-works/buddy-cli/issues)
+[![GitHub stars](https://img.shields.io/github/stars/buddy-works/buddy-cli.svg)](https://github.com/buddy-works/buddy-cli/stargazers)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/buddy-works/buddy-cli/master/LICENSE)
+
 The Buddy CLI is used to manage Buddy.Works pipelines from the terminal.
 
 Features
