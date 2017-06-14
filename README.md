@@ -8,6 +8,36 @@ buddy-cli
 
 The Buddy CLI is used to manage Buddy.Works pipelines from the terminal.
 
+### About Buddy.Works
+
+[**Buddy.Works**](https://buddy.works/) is a Docker-based CI server with auto-deployment tools. Its core feature are pipelines that let developers automate repeatable tasks, for example: build, test and deploy applications, run SSH scripts, monitor websites, build and push Docker images, or send custom Slack notifications – automatically on push, manually on click, or on time interval.
+
+![](https://buddy.works/data/blog/_images/pipelines/pipelines-5.gif)
+
+---
+
+How Buddy CLI works
+------------------------------------------------------------------------------
+With the CLI installed, you can trigger pipeline executions without entering the service's GUI. Here's an example use case:
+
+1. A developer pushes a bugfix to the DEV branch:
+```
+git commit -m 'quick bugfix'
+git push dev
+```
+
+2. Once the bugfix is pushed, he runs a pipeline assigned to the DEV branch that will test the changes and deploy the application to the DEV server:
+```
+buddy-cli pl run dev
+```
+
+3. When the execution is over, he checks if the tests have passed and deployment went through:
+```
+buddy-cli pl inspect
+```
+
+**NOTE**: To use Buddy CLI, you must first sign up to [Buddy.Works](https://buddy.works).
+
 Features
 ------------------------------------------------------------------------------
 - Run pipelines from the command line
@@ -292,7 +322,7 @@ buddy-cli cf set workspace my-workspace
 buddy-cli cf set project my-project
 buddy-cli cf set pipeline my-pipeline
 ```
-The next time you'll want to run your pipeline you can, just call
+The next time you'll want to run your pipeline, just call
 ```
 buddy-cli pl run
 ```
@@ -321,12 +351,12 @@ Options:
 buddy-cli cf get [key]
 ```
 The key can be one of the following values:
-* token
-* workspace
-* project
-* pipeline
-* url
-* all
+* token – The token used to authenticate the request
+* workspace – The name of the workspace in which the command is run
+* project – The name of the project in the workspace
+* pipeline – The ID of the pipeline in the project
+* url – The base URL for the API endpoint. By default, we point to our hosted version  of the API (api.buddy.works), but you can also
+* all – Returns all options
 
 By default, all keys are returned.
 
@@ -339,7 +369,7 @@ This command resets the config to default values (empties all keys and resets th
 ---
 
 ### Environment variables
-You can use environment variables to store your config values. This feature is very useful if you want to usie buddy-cli in a Continuous Integration (CI) and/or Continuous Deployment (CD) environment. 
+You can use environment variables to store your config values. This feature is very useful if you want to use buddy-cli in a Continuous Integration (CI) and/or Continuous Deployment (CD) environment. 
 
 This is the list of variables you can use:
 * BUDDY_CLI_TOKEN
