@@ -14,8 +14,6 @@ The Buddy CLI is used to manage Buddy.Works pipelines from the terminal.
 
 ![](https://buddy.works/data/blog/_images/pipelines/pipelines-5.gif)
 
----
-
 How Buddy CLI works
 ------------------------------------------------------------------------------
 With the CLI installed, you can trigger pipeline executions without entering the service's GUI. Here's an example use case:
