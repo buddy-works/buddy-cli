@@ -51,6 +51,7 @@ function Client() {
         path += `${name}=${query[name]}`;
       });
     }
+    console.log('url', `https://${baseUrl}${path}`);
     request({
       url: `https://${baseUrl}${path}`,
       method,
@@ -59,9 +60,12 @@ function Client() {
       },
       body: params,
       json: true,
+      strictSSL: false,
     }, (err, resp, body) => {
       if (err) {
         done(err);
+      } else if (body !== Object(body)) {
+        done(new Error('Wrong response. Do you use valid api endpoint?'));
       } else if (body && body.errors && body.errors.length > 0) {
         done(new Error(body.errors[0].message));
       } else {
