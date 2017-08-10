@@ -58,13 +58,14 @@ function Output() {
   const propsJson = obj => outputJson(obj);
   /**
    * @param {Object} obj
+   * @param {Boolean} [useRealKey]
    */
-  const propsText = (obj) => {
+  const propsText = (obj, useRealKey) => {
     let txt = 'KEY\tVALUE\n';
     let was = false;
     Object.keys(obj).forEach((key) => {
       if (was) txt += '\n';
-      const name = key.split('_').map(n => n.charAt(0).toUpperCase() + n.slice(1)).join(' ');
+      const name = !useRealKey ? key.split('_').map(n => n.charAt(0).toUpperCase() + n.slice(1)).join(' ') : key;
       let val;
       if (typeof (obj[key]) !== 'undefined' && obj[key] !== null) val = obj[key];
       else val = '';
@@ -101,10 +102,11 @@ function Output() {
   /**
    * @param {boolean} json
    * @param {object} obj
+   * @param {boolean} [useRealKey]
    */
-  this.props = (json, obj) => {
+  this.props = (json, obj, useRealKey) => {
     if (json) propsJson(obj);
-    else propsText(obj);
+    else propsText(obj, useRealKey);
   };
   /**
    * @param {function} done

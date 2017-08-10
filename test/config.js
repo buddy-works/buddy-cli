@@ -7,6 +7,31 @@ const describe = mocha.describe;
 const it = mocha.it;
 
 describe('config', () => {
+  describe('.setAlias()', () => {
+    it('should save alias', () => {
+      const key = utils.randomString(10);
+      const val = utils.randomString(10);
+      cfg.setAlias(key, val);
+      expect(cfg.getAlias(key)).equal(val);
+    });
+
+    it('should clear alias', () => {
+      const key = utils.randomString(10);
+      const val = utils.randomString(10);
+      cfg.setAlias(key, val);
+      cfg.setAlias(key, '');
+      expect(cfg.getAlias(key)).equal('');
+    });
+
+    it('should save alias on disc', () => {
+      const key = utils.randomString(10);
+      const val = utils.randomString(10);
+      cfg.setAlias(key, val);
+      const cfg2 = new cfg.constructor();
+      expect(cfg2.getAlias(key)).equal(val);
+    });
+  });
+
   describe('.set()', () => {
     it('should throw error while using wrong key', () => {
       expect(cfg.set.bind(cfg, 'key', 'val')).throw('Wrong key');
@@ -68,6 +93,42 @@ describe('config', () => {
     });
   });
 
+  describe('.getAll()', () => {
+    it('should return all key values', () => {
+      const obj = cfg.getAll();
+      expect(obj).an('object');
+      expect(Object.keys(obj)).lengthOf(cfg.getAllKeys().length);
+    });
+  });
+
+  describe('.getAllAliases()', () => {
+    it('should return all aliases', () => {
+      const key = utils.randomString(10);
+      const val = utils.randomString(10);
+      cfg.clearAliases();
+      cfg.setAlias(key, val);
+      const arr = cfg.getAllAliases();
+      expect(arr).an('object');
+      expect(Object.keys(arr)).lengthOf(1);
+      expect(arr).property(key, val);
+    });
+  });
+
+  describe('.clearAliases()', () => {
+    it('should clear all aliases', () => {
+      cfg.setAlias(utils.randomString(10), utils.randomString(10));
+      cfg.clearAliases();
+      expect(Object.keys(cfg.getAllAliases())).lengthOf(0);
+    });
+
+    it('should clear all aliases on disc', () => {
+      cfg.setAlias(utils.randomString(10), utils.randomString(10));
+      cfg.clearAliases();
+      const cfg2 = new cfg.constructor();
+      expect(Object.keys(cfg2.getAllAliases())).lengthOf(0);
+    });
+  });
+
   describe('.clear()', () => {
     it('should clear all keys in object', () => {
       cfg.set(cfg.KEY_URL, utils.randomString(10));
@@ -107,12 +168,24 @@ describe('config', () => {
       opts[cfg.KEY_PROJECT] = utils.randomString(10);
       opts[cfg.KEY_WORKSPACE] = utils.randomString(10);
       opts[cfg.KEY_PIPELINE] = utils.randomString(10);
+      cfg.clearAliases();
       cfg.mergeOptions(opts);
       expect(cfg.get(cfg.KEY_TOKEN)).equal(opts[cfg.KEY_TOKEN]);
       expect(cfg.get(cfg.KEY_URL)).equal(opts[cfg.KEY_URL]);
       expect(cfg.get(cfg.KEY_PROJECT)).equal(opts[cfg.KEY_PROJECT]);
       expect(cfg.get(cfg.KEY_WORKSPACE)).equal(opts[cfg.KEY_WORKSPACE]);
       expect(cfg.get(cfg.KEY_PIPELINE)).equal(opts[cfg.KEY_PIPELINE]);
+    });
+
+    it('should set aliases in object', () => {
+      cfg.clearAliases();
+      const aliasKey = utils.randomString(10);
+      const aliasVal = utils.randomString(10);
+      cfg.setAlias(aliasKey, aliasVal);
+      const opts = {};
+      opts[cfg.KEY_PROJECT] = aliasKey;
+      cfg.mergeOptions(opts);
+      expect(cfg.get(cfg.KEY_PROJECT)).equal(aliasVal);
     });
 
     it('must not set other keys', () => {

@@ -22,8 +22,10 @@ function Config() {
     this.KEY_URL,
   ];
   let props = {};
+  let aliases = {};
   const configDir = path.join(os.homedir(), '.buddy-cli');
   const configPath = path.join(configDir, 'config.json');
+  const aliasPath = path.join(configDir, 'alias.json');
   const me2disc = () => {
     try {
       fs.statSync(configDir);
@@ -31,6 +33,7 @@ function Config() {
       fs.mkdirSync(configDir);
     }
     fs.writeFileSync(configPath, JSON.stringify(props));
+    fs.writeFileSync(aliasPath, JSON.stringify(aliases));
   };
   const disc2me = () => {
     try {
@@ -40,6 +43,14 @@ function Config() {
       }
     } catch (e) {
       props = {};
+    }
+    try {
+      const s = fs.statSync(aliasPath);
+      if (s.isFile()) {
+        aliases = JSON.parse(fs.readFileSync(aliasPath));
+      }
+    } catch (e) {
+      aliases = {};
     }
   };
   /**
@@ -66,10 +77,29 @@ function Config() {
     return this;
   };
   /**
+   * @param {string} key
+   * @param {string} val
+   * @returns {Config}
+   */
+  this.setAlias = (key, val) => {
+    if (!val) delete aliases[key];
+    else aliases[key] = val;
+    me2disc();
+    return this;
+  };
+  /**
    * @returns {Config}
    */
   this.clear = () => {
     props = {};
+    me2disc();
+    return this;
+  };
+  /**
+   * @returns {Config}
+   */
+  this.clearAliases = () => {
+    aliases = {};
     me2disc();
     return this;
   };
@@ -88,6 +118,16 @@ function Config() {
     return props[key];
   };
   /**
+   * @param {string} key
+   * @returns {string}
+   */
+  this.getAlias = (key) => {
+    if (!aliases[key]) {
+      return '';
+    }
+    return aliases[key];
+  };
+  /**
    * @returns {object}
    */
   this.getAll = () => {
@@ -98,6 +138,10 @@ function Config() {
     }
     return res;
   };
+  /**
+   * @returns {object}
+   */
+  this.getAllAliases = () => aliases;
   /**
    * @param {object} opts
    * @returns {Config}
@@ -127,6 +171,18 @@ function Config() {
       props[this.KEY_PIPELINE] = opts[this.KEY_PIPELINE];
     } else if (process.env[this.ENV_PIPELINE]) {
       props[this.KEY_PIPELINE] = process.env[this.ENV_PIPELINE];
+    }
+    for (let i = 0; i < allowedKeys.length; i += 1) {
+      const key = allowedKeys[i];
+      const val = props[key];
+      const aliasKeys = Object.keys(aliases);
+      for (let j = 0; j < aliasKeys.length; j += 1) {
+        const aliasKey = aliasKeys[j];
+        if (val === aliasKey) {
+          props[key] = aliases[aliasKey];
+          break;
+        }
+      }
     }
     return this;
   };

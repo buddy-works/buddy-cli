@@ -285,7 +285,7 @@ Options:
  -u, --url      Base url for app (default: api.buddy.works)
 ```
 
-### Inspect workspace
+#### Inspect workspace
 ```
 buddy-cli ws inspect [workspace]
 ```
@@ -344,7 +344,7 @@ Options:
   -j, --json     Output json
 ```
 
-### Get config key
+#### Get config key
 ```
 buddy-cli cf get [key]
 ```
@@ -364,9 +364,63 @@ buddy-cli cf clear
 ```
 This command resets the config to default values (empties all keys and resets the URL to `api.buddy.works`)
 
+### Aliases
+You can use custom aliases for config properties. You can save multiple aliases for any resource:
+* Token
+* Workspace
+* Project
+* Pipeline
+* Url
+
+#### Set alias
+```
+buddy-cli al set <key> [val]
+```
+The key name is mandatory and can be any word (these name you will use as parameter value). To clear alias pass empty val.
+
+Options:
+```
+  -v, --version  Show version
+  -h, --help     Show help
+  -j, --json     Output json
+```
+#### Get alias
+```
+buddy-cli al get [key]
+```
+The key is your friendly name. By default, all keys are returned.
+
+#### Clear config
+```
+buddy-cli al clear
+```
+This command remove all stored aliases.
+
+#### Example usage
+```
+myWorkspace - name of registered workspace
+```
+To list projects in these workspace normally you would call:
+```
+buddy-cli pj ls -w myWorkspace
+```
+Using aliases:
+```
+buddy-cli al set foo myWorkspace
+buddy-cli pj ls -w foo
+```
+You can also use aliases in stored config keys:
+```
+buddy-cli al set foo myWorkspace
+buddy-cli cf set workspace foo
+buddy-cli pj ls
+```
+
+Thanks to aliases you no longer need to remember ids of your pipelines, projects names and so on. Just save it under your friendly alias. 
+
 ---
 
-### Environment variables
+#### Environment variables
 You can use environment variables to store your config values. This feature is very useful if you want to use buddy-cli in a Continuous Integration (CI) and/or Continuous Deployment (CD) environment. 
 
 This is the list of variables you can use:
