@@ -51,7 +51,6 @@ function Client() {
         path += `${name}=${query[name]}`;
       });
     }
-    console.log('url', `https://${baseUrl}${path}`);
     request({
       url: `https://${baseUrl}${path}`,
       method,
