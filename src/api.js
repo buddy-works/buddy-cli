@@ -191,7 +191,7 @@ function Api() {
    */
   this.getLastExecution = (args, done) => client.get('/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions', {
     page: 1,
-    per_page: 1
+    per_page: 1,
   }, args, (err, obj) => {
     if (err) done(err);
     else if (!obj.executions.length) done();
@@ -207,13 +207,13 @@ function Api() {
    * @param {object} args
    * @param {function} done
    */
-  this.cancelPipeline = (executionId, args, done) => client.patch(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${executionId}`, {}, args, {operation: 'CANCEL'}, done);
+  this.cancelPipeline = (executionId, args, done) => client.patch(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${executionId}`, {}, args, { operation: 'CANCEL' }, done);
   /**
    * @param {string} executionId
    * @param {object} args
    * @param {function} done
    */
-  this.retryPipeline = (executionId, args, done) => client.patch(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${executionId}`, {}, args, {operation: 'RETRY'}, done);
+  this.retryPipeline = (executionId, args, done) => client.patch(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${executionId}`, {}, args, { operation: 'RETRY' }, done);
   /**
    * @param {object} args
    * @param {function} done
