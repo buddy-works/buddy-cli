@@ -40,6 +40,16 @@ module.exports.builder = {
     describe: 'Revision from the repository that will be executed in the pipeline',
     type: 'string',
   },
+  b: {
+    alias: 'branch',
+    describe: 'Branch name from the repository that will be executed in the pipeline',
+    type: 'string',
+  },
+  g: {
+    alias: 'tag',
+    describe: 'Tag name from the repository that will be executed in the pipeline',
+    type: 'string',
+  },
   c: {
     alias: 'comment',
     describe: 'Execution comment',

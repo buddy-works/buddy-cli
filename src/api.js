@@ -163,12 +163,24 @@ function Api() {
    * @param {function} done
    */
   this.runPipeline = (args, done) => {
-    const params = {
-      to_revision: {
+    const params = {};
+    if (args.tag) {
+      params.tag = {
+        name: args.tag,
+      };
+    } else if (args.branch) {
+      params.branch = {
+        name: args.branch,
+      };
+    } else if (args.revision) {
+      params.to_revision = {
+        revision: args.revision,
+      };
+    } else {
+      params.to_revision = {
         revision: 'HEAD',
-      },
-    };
-    if (args.revision) params.to_revision.revision = args.revision;
+      };
+    }
     if (args.comment) params.comment = args.comment;
     if (args.refresh) params.refresh = true;
     client.post('/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions', {}, args, params, done);
@@ -177,7 +189,10 @@ function Api() {
    * @param {object} args
    * @param {function} done
    */
-  this.getLastExecution = (args, done) => client.get('/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions', { page: 1, per_page: 1 }, args, (err, obj) => {
+  this.getLastExecution = (args, done) => client.get('/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions', {
+    page: 1,
+    per_page: 1
+  }, args, (err, obj) => {
     if (err) done(err);
     else if (!obj.executions.length) done();
     else done(null, obj.executions[0]);
@@ -192,13 +207,13 @@ function Api() {
    * @param {object} args
    * @param {function} done
    */
-  this.cancelPipeline = (executionId, args, done) => client.patch(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${executionId}`, {}, args, { operation: 'CANCEL' }, done);
+  this.cancelPipeline = (executionId, args, done) => client.patch(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${executionId}`, {}, args, {operation: 'CANCEL'}, done);
   /**
    * @param {string} executionId
    * @param {object} args
    * @param {function} done
    */
-  this.retryPipeline = (executionId, args, done) => client.patch(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${executionId}`, {}, args, { operation: 'RETRY' }, done);
+  this.retryPipeline = (executionId, args, done) => client.patch(`/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions/${executionId}`, {}, args, {operation: 'RETRY'}, done);
   /**
    * @param {object} args
    * @param {function} done
