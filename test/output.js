@@ -1,12 +1,12 @@
 const mocha = require('mocha');
-const expect = require('chai').expect;
 const output = require('../src/output');
 const cliui = require('cliui');
 const sinon = require('sinon');
 const chalk = require('chalk');
+const { expect } = require('chai');
 
-const describe = mocha.describe;
-const it = mocha.it;
+const { describe } = mocha;
+const { it } = mocha;
 
 const json2text = obj => JSON.stringify(obj, null, 2);
 

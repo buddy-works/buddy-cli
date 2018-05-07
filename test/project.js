@@ -1,13 +1,13 @@
 const mocha = require('mocha');
-const expect = require('chai').expect;
 const ls = require('../src/cmds/project/ls');
 const inspect = require('../src/cmds/project/inspect');
 const output = require('../src/output');
 const sinon = require('sinon');
 const api = require('../src/api');
+const { expect } = require('chai');
 
-const describe = mocha.describe;
-const it = mocha.it;
+const { describe } = mocha;
+const { it } = mocha;
 
 describe('project', () => {
   describe('ls', () => {

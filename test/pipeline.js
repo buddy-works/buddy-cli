@@ -1,5 +1,4 @@
 const mocha = require('mocha');
-const expect = require('chai').expect;
 const sinon = require('sinon');
 const output = require('../src/output');
 const ls = require('../src/cmds/pipeline/ls');
@@ -11,9 +10,10 @@ const retry = require('../src/cmds/pipeline/retry');
 const run = require('../src/cmds/pipeline/run');
 const config = require('../src/config');
 const api = require('../src/api');
+const { expect } = require('chai');
 
-const describe = mocha.describe;
-const it = mocha.it;
+const { describe } = mocha;
+const { it } = mocha;
 
 describe('pipeline', () => {
   describe('ls', () => {

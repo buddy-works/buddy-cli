@@ -1,10 +1,11 @@
 const mocha = require('mocha');
-const expect = require('chai').expect;
+const chai = require('chai');
 const cfg = require('../src/config');
 const utils = require('./utils');
 
-const describe = mocha.describe;
-const it = mocha.it;
+const { expect } = chai;
+const { describe } = mocha;
+const { it } = mocha;
 
 describe('config', () => {
   describe('.setAlias()', () => {
