@@ -87,16 +87,17 @@ buddy-cli pl r [pipeline]
 ```
 Options:
 ```
- -v, --version    Show version
- -h, --help       Show help
- -j, --json       Output json
- -t, --token      The token used to authenticate the request
- -u, --url        The base URL for the app (default: api.buddy.works)
- -w, --workspace  The name of the workspace in which the command is run
- -p, --project    The name of the project in which the command is run
- -r, --revision   The revision from the repository that will be executed in the pipeline
- -c, --comment    The execution comment
- -f, --refresh    Execute from scratch
+ -v, --version      Show version
+ -h, --help         Show help
+ -j, --json         Output json
+ -t, --token        The token used to authenticate the request
+ -u, --url          The base URL for the app (default: api.buddy.works)
+ -w, --workspace    The name of the workspace in which the command is run
+ -p, --project      The name of the project in which the command is run
+ -r, --revision     The revision from the repository that will be executed in the pipeline
+ -c, --comment      The execution comment
+ -f, --refresh      Execute from scratch
+ -e, --environment  Set environment variables for this execution
 ```
 
 #### Retry pipeline

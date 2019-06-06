@@ -60,6 +60,11 @@ module.exports.builder = {
     describe: 'Execute from scratch',
     type: 'boolean',
   },
+  e: {
+    alias: 'environment',
+    describe: 'Set environment variables',
+    type: 'string',
+  },
 };
 
 module.exports.request = (args, done) => api.runPipeline(args, done);
