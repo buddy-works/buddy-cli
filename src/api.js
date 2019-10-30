@@ -183,6 +183,14 @@ function Api() {
     }
     if (args.comment) params.comment = args.comment;
     if (args.refresh) params.refresh = true;
+    if (args.environment) {
+      let variables = args.environment;
+      if (!Array.isArray(variables)) variables = [variables];
+      params.variables = variables.map((pair) => {
+        let [key, value] = pair.split(/=(.+)/);
+        return {key, value};
+      });
+    }
     client.post('/workspaces/:workspace/projects/:project/pipelines/:pipeline/executions', {}, args, params, done);
   };
   /**
