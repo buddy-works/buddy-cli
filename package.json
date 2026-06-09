@@ -29,12 +29,11 @@
   },
   "homepage": "https://buddy.works",
   "engines": {
-    "node": ">= 6"
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "chalk": "2.4.1",
     "cliui": "4.1.0",
-    "request": "2.85.0",
     "yargs": "11.0.0"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
+/* global fetch */
 const config = require('./config');
-const request = require('request');
 
 function Client() {
   /**
@@ -51,25 +51,36 @@ function Client() {
         path += `${name}=${query[name]}`;
       });
     }
-    request({
-      url: `https://${baseUrl}${path}`,
+    const hasBody = params !== null && params !== undefined;
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    };
+    if (hasBody) headers['Content-Type'] = 'application/json';
+    // Native fetch (Node 18+) resolves on non-2xx just like `request` did, so
+    // the Buddy error shape (body.errors[]) is surfaced here, not in .catch.
+    fetch(`https://${baseUrl}${path}`, {
       method,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: params,
-      json: true,
-      strictSSL: false,
-    }, (err, resp, body) => {
-      if (err) {
-        done(err);
-      } else if (body !== Object(body)) {
+      headers,
+      body: hasBody ? JSON.stringify(params) : undefined,
+    }).then(resp => resp.text()).then((text) => {
+      // `request` with json:true left a non-JSON body as a string, which the
+      // check below treats as an invalid endpoint; parse leniently to match.
+      let body;
+      try {
+        body = JSON.parse(text);
+      } catch (e) {
+        body = text;
+      }
+      if (body !== Object(body)) {
         done(new Error('Wrong response. Do you use valid api endpoint?'));
       } else if (body && body.errors && body.errors.length > 0) {
         done(new Error(body.errors[0].message));
       } else {
         done(null, body);
       }
+    }).catch((err) => {
+      done(err);
     });
   };
   /**
